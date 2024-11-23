@@ -1,16 +1,20 @@
-//write a js function to get the content body of a page in confluence
 
-export async function fetchConfluenceContent() {
-    console.log('--------Fetching content from Confluence');
-    const url = 'http://127.0.0.1:5000/confluence/search?query=OpenAI';
-
-    const res = await fetch(url)
+export async function searchConfluence(searchText) {
+    console.log(' ============== searchConfluence ');
+    const res = await fetch(import.meta.env.VITE_DOCUAI_BACKEND_SERVER_URL + '/search?query='+searchText)
     if (!res.ok) {
         throw new Error(`HTTP error! status: ${res.status}`);
     }
     const data = await res.json()
-    console.log('3333333-------- Response data:', data);
     return data;
-
 }
 
+export async function getConfluencePageContent() {
+    const res = await fetch(import.meta.env.VITE_DOCUAI_BACKEND_SERVER_URL + '/page/622594')
+    if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+    }
+    const data = await res.json()
+    console.log('4444 getConfluencePageContent ==============  ', data);
+    return data;
+}

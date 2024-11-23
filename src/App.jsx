@@ -2,15 +2,18 @@ import { useEffect, useState } from 'react'
 import './App.css'
 import '@chatscope/chat-ui-kit-styles/dist/default/styles.min.css';
 import { MainContainer, ChatContainer, MessageList, Message, MessageInput, TypingIndicator } from '@chatscope/chat-ui-kit-react';
-import { fetchConfluenceContent } from './scripts/confluenceApis';
+import { getConfluencePageContent, searchConfluence } from './scripts/confluenceApis';
 import { cleanText } from './scripts/textHandlers';
 
-const API_KEY = "";
-// "Explain things like you would to a 10 year old learning how to code."
-const systemMessage = { //  Explain things like you're talking to a software professional with 5 years of experience.
+// console.log('**********TEST111111', import.meta.env.VITE_TEST)
+
+const OPENAPI_KEY = import.meta.env.VITE_OPENAPI_KEY;
+const DOCUAI_CONFLUENCE_URL = import.meta.env.VITE_DOCUAI_CONFLUENCE_URL;
+
+const systemMessage = { 
   "role": "system", "content": "Explain things like you're talking to a software professional with 2 years of experience."
 }
-const CONFLUENCE_URL = 'https://docuaihackathonpoc.atlassian.net/wiki'
+
 
 function App() {
   const [messages, setMessages] = useState([
@@ -27,9 +30,8 @@ function App() {
   useEffect(() => {
     const fetchContent = async () => {
       try {
-        const data = await fetchConfluenceContent();
-        console.log('============== from UI ', data);
-        // data?.results?.results?.content?.title
+        const data = await searchConfluence('OpenAI');
+        // const pageData = await getConfluencePageContent();
         setPageContents(data);
       } catch (error) {
         console.error('Error fetching content:', error);
@@ -72,14 +74,11 @@ function App() {
     });
 
 
-    // Get the request body set up with the model we plan to use
-    // and the messages which we formatted above. We add a system message in the front to'
-    // determine how we want chatGPT to act. 
     const apiRequestBody = {
       "model": "gpt-3.5-turbo",
       "messages": [
-        systemMessage,  // The system message DEFINES the logic of our chatGPT
-        ...apiMessages // The messages from our chat with ChatGPT
+        systemMessage,  
+        ...apiMessages
       ]
     }
 
@@ -87,7 +86,7 @@ function App() {
     {
       method: "POST",
       headers: {
-        "Authorization": "Bearer " + API_KEY,
+        "Authorization": "Bearer " + OPENAPI_KEY,
         "Content-Type": "application/json"
       },
       body: JSON.stringify(apiRequestBody)
@@ -123,16 +122,15 @@ function App() {
        
       </div> 
       <div>
-      {console.log("------ 1pageContents:", pageContents)} {/* Log the entire pageContents */}
-      {console.log("------ 2pageContents:", pageContents?.results)} {/* Log the entire pageContents */}
-      {console.log("------ 3pageContents:", pageContents?.results?.results)} {/* Log the entire pageContents */}
-
+  
         <ul>
          {pageContents.results?.results?.filter(result => result.content.type=='page').map((item, index) => {
-          console.log("Mapping item:", item);
-          return (<a  target="_blank" href={CONFLUENCE_URL+item.url}> <li key={'k'+index}>{cleanText(item.title)}</li></a>)
+          return (<a  target="_blank" href={DOCUAI_CONFLUENCE_URL+item.url}> <li key={'k'+index}>{cleanText(item.title)}</li></a>)
          })}
          </ul>
+         {/* <div>
+          {getConfluencePageContent()}
+         </div> */}
         </div>
     </div>
   )
