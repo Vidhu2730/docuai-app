@@ -26,13 +26,11 @@ function App() {
       direction: 'outgoing',
       sender: "user"
     };
-    console.log('abcd message:', message); // Debugging log
     const newMessages = [...messages, newMessage];
     setMessages(newMessages);
     setQuery(message); // Update the query state with the user's message
    
     setIsTyping(true);
-    console.log('mnop:', message); // Debugging log
 
     try {
       const response = await axios.post('http://127.0.0.1:5000/interact', { query: message });
