@@ -55,7 +55,7 @@ function App() {
           <ChatContainer>
             <MessageList 
               scrollBehavior="smooth" 
-              typingIndicator={isTyping ? <TypingIndicator content="ChatGPT is typing" /> : null}
+              typingIndicator={isTyping ? <TypingIndicator content="DocuAI is typing" /> : null}
             >
               {messages.map((message, i) => (
                 <Message key={i} model={message} />
