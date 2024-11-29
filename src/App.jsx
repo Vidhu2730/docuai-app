@@ -11,7 +11,7 @@ const systemMessage = {
 function App() {
   const [messages, setMessages] = useState([
     {
-      message: "Hello, I'm ChatGPT! Ask me anything!",
+      message: "Hello, I'm DocuAI! Ask me anything from Confuence!",
       sentTime: "just now",
       sender: "ChatGPT"
     }
